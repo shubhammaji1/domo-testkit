@@ -7,6 +7,24 @@ import assert from 'node:assert/strict';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const npmCli = process.env.npm_execpath;
 assert(npmCli, 'Run this verification with npm run smoke');
+const lock = JSON.parse(
+  readFileSync(resolve(root, 'package-lock.json'), 'utf8'),
+);
+const consumerDependencies = [
+  'msw',
+  'vitest',
+  '@vitest/coverage-v8',
+  'react',
+  'react-dom',
+  'jsdom',
+  '@testing-library/react',
+  'typescript',
+  '@types/node',
+].map((name) => {
+  const version = lock.packages[`node_modules/${name}`]?.version;
+  assert(version, `Missing locked smoke dependency: ${name}`);
+  return `${name}@${version}`;
+});
 const run = (args, cwd = root) =>
   execFileSync(process.execPath, args, {
     cwd,
@@ -43,20 +61,12 @@ run(
   [
     npmCli,
     'install',
-    '--offline',
+    '--prefer-offline',
     '--ignore-scripts',
     '--no-audit',
     '--no-fund',
     resolve(root, pack.filename),
-    'msw@3.0.3',
-    'vitest@5.0.4',
-    '@vitest/coverage-v8@5.0.4',
-    'react@19',
-    'react-dom@19',
-    'jsdom@27',
-    '@testing-library/react@16',
-    'typescript@5.9.3',
-    '@types/node@22',
+    ...consumerDependencies,
   ],
   project,
 );

@@ -6,6 +6,8 @@ Add a contract matrix entry and independent reference case for every newly suppo
 
 Examples are real tests included in the suite. Their relative imports target source during package development; consumers use `domo-testkit` and `domo-testkit/vitest`. The clean-install smoke suite exercises the installed exports and generated consumer test. Keep documentation commands synchronized with tested scripts.
 
+The tarball smoke check installs a new consumer project. It prefers npm's cache but may access the registry to obtain missing dependency metadata or archives. `npm ci` alone does not guarantee the metadata needed by a separate `npm install` is cached. Smoke dependencies use the exact direct versions recorded in the root lockfile; it does not bypass peer dependency validation. The installed application's mock tests remain offline.
+
 ## Branch protection
 
 After pushing to a repository, configure branch protection to require the `quality` job and every `verify` matrix job, require review and disallow bypasses/force pushes. GitHub account/repository settings cannot be configured by local files. CI uploads coverage and tarballs for review; it has no publish token.
