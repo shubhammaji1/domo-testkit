@@ -1,0 +1,8 @@
+node_modules
+.research
+dist
+coverage
+package-lock.json
+docs/research
+.smoke
+*.tgz

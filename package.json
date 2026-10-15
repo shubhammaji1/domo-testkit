@@ -1,0 +1,87 @@
+{
+  "name": "domo-testkit",
+  "version": "0.1.0",
+  "description": "Test Domo Apps Before Domo Tests You. Deterministic offline Domo API simulation.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "files": [
+    "dist",
+    "docs",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "SECURITY.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./vitest": {
+      "types": "./dist/vitest.d.ts",
+      "import": "./dist/vitest.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "domo-testkit": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "smoke": "node scripts/smoke.mjs",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "commander": "^14.0.0",
+    "picocolors": "^1.1.1",
+    "zod": "^4.0.0"
+  },
+  "peerDependencies": {
+    "msw": "^3.0.3",
+    "vitest": "^5.0.4"
+  },
+  "peerDependenciesMeta": {
+    "vitest": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@domoinc/toolkit": "^2.3.0",
+    "@testing-library/react": "^16.0.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitest/coverage-v8": "5.0.4",
+    "eslint": "^9.0.0",
+    "jsdom": "^27.0.0",
+    "msw": "3.0.3",
+    "prettier": "^3.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.0.0",
+    "vitest": "5.0.4"
+  },
+  "keywords": [
+    "domo",
+    "testing",
+    "vitest",
+    "msw",
+    "appdb",
+    "mock"
+  ],
+  "overrides": {
+    "esbuild": "^0.28.1"
+  }
+}

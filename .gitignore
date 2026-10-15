@@ -1,0 +1,8 @@
+node_modules/
+.research/
+dist/
+coverage/
+.smoke/
+*.tgz
+.env*
+!.env.example
