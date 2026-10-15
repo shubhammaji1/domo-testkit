@@ -2,6 +2,7 @@
 import { Command } from 'commander';
 import pc from 'picocolors';
 import { readFile, writeFile, access, lstat } from 'node:fs/promises';
+import { realpathSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createRequire } from 'node:module';
 import { spawn } from 'node:child_process';
@@ -157,7 +158,7 @@ export async function runCli(argv = process.argv, cwd = process.cwd()) {
 }
 if (
   process.argv[1] &&
-  import.meta.url === pathToFileURL(resolve(process.argv[1])).href
+  import.meta.url === pathToFileURL(realpathSync(resolve(process.argv[1]))).href
 ) {
   runCli().catch((error) => {
     console.error(

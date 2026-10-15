@@ -46,7 +46,11 @@ The default execution sandbox denied loopback connections; the allowlist test pa
 
 ## Release gates and unsupported scope
 
-After the CI cache fix, the full tarball smoke check also passed locally with an initially empty npm cache: dependency installation, runtime API, declarations, installed CLI, JSON/JUnit/coverage reporting, React, and failed-test cleanup. Lint, formatting and diff whitespace checks passed for the fix. The corrected workflow has not yet been pushed or rerun on GitHub.
+The CLI real-path fix passed local type checking, lint, formatting and the complete tarball smoke test, including the new installed linked-directory entry check. The fix remains unpushed; Linux/macOS CI results for it are not yet available.
+
+After the CI cache fix, the full tarball smoke check also passed locally with an initially empty npm cache: dependency installation, runtime API, declarations, installed CLI, JSON/JUnit/coverage reporting, React, and failed-test cleanup. Lint, formatting and diff whitespace checks passed for that fix.
+
+The [second CI run](https://github.com/shubhammaji1/domo-testkit/actions/runs/38684458674) passed all three complete Windows verification jobs. Linux and macOS passed tests, coverage and builds, then failed when npm invoked the CLI through a symlink: the entry-point guard compared the real module URL with the unresolved launch path and skipped CLI execution. The further local fix resolves the launch path with `realpathSync` and adds an installed linked-directory launch check. The original empty-output failure was reproduced locally using a Windows directory junction. The updated CLI still requires a full GitHub matrix rerun before release.
 
 The first [GitHub CI run](https://github.com/shubhammaji1/domo-testkit/actions/runs/38683780903) passed quality checks, tests with coverage, builds and pack inspection across Node 22/24/26 × Windows/Linux/macOS. All nine verification jobs failed at the clean consumer install because the original smoke script required a prepopulated npm metadata cache with `--offline`. The local fix uses `--prefer-offline` and selects exact direct dependency versions from the committed lockfile. A new full CI run must confirm the fix before release. Repository metadata, branch protection and maintainer publication authorization remain release gates. No npm publication or live Domo test was performed.
 

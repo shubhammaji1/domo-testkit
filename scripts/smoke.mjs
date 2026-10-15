@@ -1,5 +1,11 @@
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import {
+  mkdtempSync,
+  mkdirSync,
+  readFileSync,
+  writeFileSync,
+  symlinkSync,
+} from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
@@ -116,6 +122,14 @@ run(
 );
 const cli = 'node_modules/domo-testkit/dist/cli.js';
 assert.match(run([cli, '--help'], project), /init/);
+// POSIX npm bins are symlinks. A directory junction exercises the same
+// realpath-vs-argv distinction on Windows without file-symlink privileges.
+symlinkSync(
+  resolve(project, 'node_modules/domo-testkit/dist'),
+  resolve(project, 'linked-cli'),
+  process.platform === 'win32' ? 'junction' : 'dir',
+);
+assert.match(run(['linked-cli/cli.js', '--help'], project), /init/);
 assert.match(
   run([npmCli, 'exec', '--offline', '--', 'domo-testkit', '--help'], project),
   /init/,
