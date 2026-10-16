@@ -1,9 +1,17 @@
 {
   "name": "domo-testkit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Test Domo Apps Before Domo Tests You. Deterministic offline Domo API simulation.",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shubhammaji1/domo-testkit.git"
+  },
+  "homepage": "https://github.com/shubhammaji1/domo-testkit#readme",
+  "bugs": {
+    "url": "https://github.com/shubhammaji1/domo-testkit/issues"
+  },
   "engines": {
     "node": ">=22.12.0"
   },
@@ -39,6 +47,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "smoke": "node scripts/smoke.mjs",
+    "verify:published": "node scripts/verify-published.mjs",
+    "verify:package": "node scripts/verify-published.mjs",
     "prepack": "npm run build"
   },
   "dependencies": {
@@ -61,7 +71,7 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "@vitest/coverage-v8": "5.0.4",
+    "@vitest/coverage-v8": "5.0.5",
     "eslint": "^9.0.0",
     "jsdom": "^27.0.0",
     "msw": "3.0.3",
@@ -71,7 +81,7 @@
     "tsup": "^8.0.0",
     "typescript": "^5.9.0",
     "typescript-eslint": "^8.0.0",
-    "vitest": "5.0.4"
+    "vitest": "5.0.5"
   },
   "keywords": [
     "domo",

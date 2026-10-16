@@ -24,6 +24,8 @@ Also exported: `validateConfig`, `normalizeManifest`, `validateQuery`, `contract
 
 ## Configuration
 
+Named TypeScript interfaces are accepted for document content, dataset rows, fixture seeds and overrides. `Document<T>` retains the supplied content model's field types; no string index signature is required. Input objects are validated as plain JSON at runtime, and read results retain the default JSON row shape. The parsed Domo client also accepts typed request interfaces and rejects non-JSON values before serialization.
+
 | Option                                | Default / meaning                                                                                                                                      |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `datasets`                            | Alias to source JSON rows; empty object                                                                                                                |

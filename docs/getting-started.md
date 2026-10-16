@@ -1,6 +1,6 @@
 # Getting started
 
-Install the packed artifact into an ESM Node 22.12+ project with MSW 3 and Vitest 5. A Domo account, React, a proxy and a global Domo CLI are unnecessary. The README gives the verified build and smoke commands.
+Install `domo-testkit`, `msw@3` and `vitest@5` as development dependencies in an ESM Node 22.12+ application. A Domo account, React, a proxy and a global Domo CLI are unnecessary. The npm artifact is already built; the README gives consumer installation and CLI commands.
 
 1. Write fixture rows using synthetic values. Dataset fixtures use source column names when manifest mappings are supplied.
 2. Register `useDomoTestKit` from `domo-testkit/vitest` in a setup file or sequential test suite. This checks offline violations before resetting each test.

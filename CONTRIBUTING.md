@@ -14,6 +14,8 @@ After pushing to a repository, configure branch protection to require the `quali
 
 ## Versioning and release
 
+Use `npm run verify:published` to test the current npm release in a fresh consumer project. To verify an unpublished candidate with the same checks, build and pack it, then run `npm run verify:package -- --tarball <absolute-tarball-path>`. Both modes record their artifact source and results under `.smoke`; the candidate mode does not publish anything. The regular `npm run smoke` also checks named-interface declarations and consumer installation instructions.
+
 Use npm's established semantic-version workflow (`npm version`) and maintain CHANGELOG.md. During 0.x, document every breaking change. A maintainer must explicitly authorize publication. Before release:
 
 1. Recheck the exact npm name `domo-testkit`; a conflict blocks publication.

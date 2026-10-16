@@ -4,19 +4,27 @@
 
 An offline testing library for Domo Custom Apps and TypeScript services. Use your existing Vitest suite, mock HTTP with MSW, and exercise dataset loading and stateful AppDB operations without credentials. This is an independent community project, not affiliated with or endorsed by Domo.
 
-Version 0.1.0 is a release candidate. Tests verify the simulator and application behavior against documented contract subsets; they do not prove a live Domo deployment works.
+The 0.1.x releases provide an early-access offline simulator. Tests verify the simulator and application behavior against documented contract subsets; they do not prove a live Domo deployment works.
 
 ## Installation
 
-Requires Node **22.12+**, ESM, MSW **3.0.3+ within major 3**, and optionally Vitest **5.0.4+ within major 5**. The package is not yet published. Build and verify the local tarball:
+Requires Node **22.12+**, ESM, MSW **3.0.3+ within major 3**, and optionally Vitest **5.0.4+ within major 5**. Install from npm in your application's project:
 
 ```sh
-npm ci
-npm run build
-npm run smoke
+npm install --save-dev domo-testkit msw@3 vitest@5
 ```
 
-The smoke task packs `domo-testkit-0.1.0.tgz`, installs it in a clean temporary project, checks declarations, and executes the public runtime and CLI. To install that artifact in your application, use its absolute path with your package manager and install `msw@3.0.3` and `vitest@5.0.4` as development dependencies. A future npm release will use the exact name `domo-testkit`; no publication is performed by these commands.
+For a standalone Node test without Vitest, install `domo-testkit` and `msw@3` as development dependencies. React is optional; component tests additionally need React, React DOM, jsdom and Testing Library. The npm artifact contains compiled code and declarations, so consumers do not need to build this library or run its development scripts.
+
+To generate and run a separate example suite:
+
+```sh
+npx domo-testkit init --yes
+npx domo-testkit check
+npx domo-testkit test --config vitest.domo.config.ts
+```
+
+For source development, clone the [GitHub repository](https://github.com/shubhammaji1/domo-testkit) and follow [CONTRIBUTING.md](CONTRIBUTING.md). Its smoke script verifies a local tarball; `verify:published` checks the npm release independently.
 
 ## Five-minute quick start
 
@@ -63,6 +71,31 @@ kit.reset(); // original rows restored
 ```
 
 Optional `datasetSchemas` accept Zod schemas (or a compatible `.parse()` validator) for source rows. Validation runs for initial fixtures, seeds, and overrides. See [dataset testing](docs/dataset-testing.md).
+
+Named application interfaces work as fixture inputs and document content types:
+
+```ts
+import { createDomoTestKit, type Document } from 'domo-testkit';
+
+interface Sale {
+  amount: number;
+}
+interface Todo {
+  title: string;
+  completed: boolean;
+}
+const sales: Sale[] = [{ amount: 100 }];
+const todo: Document<Todo> = {
+  id: 'todo-1',
+  content: { title: 'Ship tests', completed: false },
+};
+const kit = createDomoTestKit({
+  datasets: { sales },
+  appdb: { TodoList: [todo] },
+});
+```
+
+No string index signature or object type-alias workaround is required. Fixtures and parsed-client request bodies are still validated as plain JSON at runtime; functions, dates, cycles and unsafe properties are rejected.
 
 ## Stateful AppDB
 

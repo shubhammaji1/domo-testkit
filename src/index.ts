@@ -402,13 +402,13 @@ export function createDomoTestKit(input: TestKitConfig = {}) {
       state.seed(fixtures, options);
     },
     datasets: {
-      set: (alias: string, rows: Row[]) => state.setDataset(alias, rows),
+      set: (alias: string, rows: object[]) => state.setDataset(alias, rows),
       get: (alias: string) => state.getDataset(alias),
     },
     appdb: {
       list: (name: string) => state.list(name),
       get: (name: string, id: string) => state.get(name, id),
-      query: (name: string, query: Row) => state.query(name, query),
+      query: (name: string, query: object) => state.query(name, query),
     },
     requests: () => jsonClone(history),
     setScenario(name: ScenarioName, scenario: Scenario = {}) {
@@ -442,14 +442,14 @@ export function createDomoTestKit(input: TestKitConfig = {}) {
       async function call<T>(
         method: string,
         url: string,
-        body?: Json,
+        body?: Json | object,
       ): Promise<T> {
         const response = await kit.fetch(url, {
           method,
           ...(body === undefined
             ? {}
             : {
-                body: JSON.stringify(body),
+                body: JSON.stringify(jsonClone(body, config.maxRequestBytes)),
                 headers: { 'content-type': 'application/json' },
               }),
         });

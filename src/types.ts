@@ -2,7 +2,7 @@ export type Json =
   null | boolean | number | string | Json[] | { [key: string]: Json };
 export type Row = { [key: string]: Json };
 export type ApiVersion = 'v1' | 'v2';
-export interface Document<T extends Row = Row> {
+export interface Document<T extends object = Row> {
   id: string;
   content: T;
   owner?: string;
@@ -39,8 +39,9 @@ export interface Manifest {
   collectionsMapping?: CollectionDefinition[];
 }
 export interface Fixtures {
-  datasets?: Record<string, Row[]>;
-  appdb?: Record<string, Document[]>;
+  /** Named interfaces are accepted; fixture values are validated as plain JSON at runtime. */
+  datasets?: Record<string, object[]>;
+  appdb?: Record<string, Document<object>[]>;
 }
 export interface TestKitConfig extends Fixtures {
   baseUrl?: string;
@@ -94,7 +95,7 @@ export interface RequestRecord {
 }
 export interface DomoClient {
   get<T = Json>(url: string): Promise<T>;
-  post<T = Json>(url: string, body: Json): Promise<T>;
-  put<T = Json>(url: string, body: Json): Promise<T>;
+  post<T = Json>(url: string, body: Json | object): Promise<T>;
+  put<T = Json>(url: string, body: Json | object): Promise<T>;
   delete<T = void>(url: string): Promise<T>;
 }

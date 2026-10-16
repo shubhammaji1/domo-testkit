@@ -11,6 +11,10 @@ import { createDomoTestKit, validateConfig } from './index.js';
 import { jsonClone, TestKitError } from './security.js';
 import type { TestKitConfig } from './types.js';
 
+const packageVersion = (
+  createRequire(import.meta.url)('../package.json') as { version: string }
+).version;
+
 async function exists(path: string) {
   try {
     await access(path);
@@ -50,7 +54,7 @@ export async function runCli(argv = process.argv, cwd = process.cwd()) {
   const program = new Command()
     .name('domo-testkit')
     .description('Test Domo Apps Before Domo Tests You.')
-    .version('0.1.0');
+    .version(packageVersion);
   program
     .command('init')
     .description(

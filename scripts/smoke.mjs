@@ -99,10 +99,22 @@ writeFileSync(
   resolve(project, 'api.ts'),
   `import { createDomoTestKit, type Document, type TestKitConfig } from 'domo-testkit';
 import { useDomoTestKit } from 'domo-testkit/vitest';
-const config: TestKitConfig = { datasets: { sales: [{ amount: 1 }] } };
+interface Sale { amount: number }
+interface Todo { title: string; completed: boolean }
+interface TodoRequest { content: Todo }
+const sales: Sale[] = [{ amount: 1 }];
+const config: TestKitConfig = { datasets: { sales } };
 const kit = createDomoTestKit(config);
-const doc: Document = { id: 'one', content: { title: 'typed' } };
+const doc: Document<Todo> = { id: 'one', content: { title: 'typed', completed: false } };
 kit.seed({ appdb: { Todos: [doc] } });
+kit.datasets.set('sales', sales);
+const body: TodoRequest = { content: doc.content };
+void (() => kit.createDomoClient().post<Document<Todo>>('/domo/datastores/v2/collections/Todos/documents', body));
+// @ts-expect-error Content fields must remain typed.
+const invalid: Document<Todo> = { id: 'bad', content: { title: 123, completed: false } };
+// @ts-expect-error Fixture rows must be objects.
+kit.datasets.set('sales', [123]);
+void invalid;
 void useDomoTestKit;
 `,
 );
@@ -111,7 +123,6 @@ run(
     'node_modules/typescript/bin/tsc',
     '--noEmit',
     '--strict',
-    '--skipLibCheck',
     '--module',
     'NodeNext',
     '--target',
@@ -121,7 +132,14 @@ run(
   project,
 );
 const cli = 'node_modules/domo-testkit/dist/cli.js';
+assert.equal(run([cli, '--version'], project).trim(), pack.version);
 assert.match(run([cli, '--help'], project), /init/);
+const readme = readFileSync(
+  resolve(project, 'node_modules/domo-testkit/README.md'),
+  'utf8',
+);
+assert(!/package is not yet published/i.test(readme));
+assert(/npm (?:install|i)\b[^\n]*domo-testkit/.test(readme));
 // POSIX npm bins are symlinks. A directory junction exercises the same
 // realpath-vs-argv distinction on Windows without file-symlink privileges.
 symlinkSync(

@@ -27,8 +27,9 @@ export class State {
     this.sequence = 0;
   }
   private prepare(fixtures: Fixtures) {
-    const cloned = jsonClone(fixtures, this.config.maxFixtureBytes);
-    fixturesSchema.parse(cloned);
+    const cloned = fixturesSchema.parse(
+      jsonClone(fixtures, this.config.maxFixtureBytes),
+    );
     const datasets = new Map<string, Row[]>();
     const collections = new Map<string, Document[]>();
     for (const mapping of this.config.mappings.datasets)
@@ -61,9 +62,10 @@ export class State {
       this.config.datasetSchemas[alias]?.parse(row);
     });
   }
-  setDataset(alias: string, rows: Row[]) {
-    fixturesSchema.parse({ datasets: { [alias]: [] } });
-    const next = jsonClone(rows, this.config.maxFixtureBytes);
+  setDataset(alias: string, rows: object[]) {
+    const next = fixturesSchema.parse(
+      jsonClone({ datasets: { [alias]: rows } }, this.config.maxFixtureBytes),
+    ).datasets![alias]!;
     this.validateRows(alias, next);
     jsonClone(
       {
@@ -178,7 +180,7 @@ export class State {
       this.list(name).filter((d) => d.id !== id),
     );
   }
-  query(name: string, query: Row) {
+  query(name: string, query: object) {
     validateQuery(query);
     return this.list(name).filter((d) => matches(d, query));
   }

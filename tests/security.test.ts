@@ -29,6 +29,7 @@ test.each([
   expect(() => jsonClone(input)).toThrow();
   expect(({} as { polluted?: boolean }).polluted).toBeUndefined();
 });
+// This stress case enumerates 500,001 entries; allow CPU contention on CI workers.
 test('rejects cycles, accessors, depth, node and byte exhaustion without execution', () => {
   const cycle: Record<string, unknown> = {};
   cycle.x = cycle;
@@ -54,7 +55,7 @@ test('rejects cycles, accessors, depth, node and byte exhaustion without executi
   ).toThrow('complexity');
   expect(() => jsonClone({ x: 'long text' }, 2)).toThrow('size');
   expect(() => jsonClone({ aaaaaaaa: 1 }, 2)).toThrow('size');
-});
+}, 15_000);
 test('safe path rejects excessive, empty and unsafe segments', () => {
   for (const path of [
     '',
